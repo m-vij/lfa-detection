@@ -1,0 +1,28 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+.ipynb_checkpoints/
+.pytest_cache/
+
+# Data (may contain patient images -- do NOT commit)
+data/*
+!data/README.md
+
+# Model weights -- share via GitHub Releases / Git LFS instead
+models/*
+!models/README.md
+*.pt
+*.pth
+
+# Generated outputs
+results/*
+!results/.gitkeep
+
+# Colab / OS
+.DS_Store
+sample_data/
+*.zip
+runs/

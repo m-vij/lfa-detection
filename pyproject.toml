@@ -1,0 +1,21 @@
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "lfa-detection"
+version = "0.1.0"
+description = "Computer-vision + neural-network pipeline for quantifying lateral flow assay (LFA) test strips"
+readme = "README.md"
+requires-python = ">=3.9"
+dependencies = [
+    "numpy", "scipy", "opencv-python", "matplotlib", "seaborn", "pandas",
+    "scikit-learn", "torch", "ultralytics", "pyyaml",
+]
+
+[project.optional-dependencies]
+umap = ["umap-learn"]
+dev = ["pytest"]
+
+[tool.setuptools.packages.find]
+where = ["src"]

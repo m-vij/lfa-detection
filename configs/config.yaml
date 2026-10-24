@@ -1,0 +1,63 @@
+# ---------------------------------------------------------------------------
+# LFA Detection pipeline configuration
+# All relative paths are resolved from the repository root.
+# ---------------------------------------------------------------------------
+
+paths:
+  yolo_weights: models/best.pt
+  calibration_dir: data/calibration          # contains sub-folders 1/ ... 6/ (one per concentration)
+  patient_images_dir: data/patient_samples
+  # Extra folders also searched for filenames listed in patient_csv.
+  extra_image_dirs:
+    - data/positive_control
+    - data/negative_control
+  # Folders whose images are ALL analysed in step 04, each labelled with the given
+  # Condition (so they are used by the classifier in step 05). These images do not
+  # need to appear in patient_csv.
+  labeled_image_dirs:
+    data/positive_control: positive
+    data/negative_control: Negative    # same spelling as the CSV so they form one class
+  patient_csv: data/patient_readings.csv     # columns: Image, Condition, (optional) Notes
+  calibration_json: models/calibration.json  # written by step 01, read by steps 02 and 04
+  models_dir: models                         # final_model_band{1..6}.pth live here
+  results_dir: results
+
+# Physical geometry of the test strip
+geometry:
+  real_world_distance_cm: 2.55   # known distance between the "1" marker and the nearest control marker
+  num_bands: 6
+
+# Signal extraction along the strip
+signal:
+  track_width: 15                # pixels averaged perpendicular to the sampling path
+  tolerance: 30                  # pixel padding before/after the path
+  savgol_window: 21
+  savgol_polyorder: 2
+  baseline_sigma: 20             # gaussian baseline removal
+  peak_width: 4                  # min peak width (px) for control / first-pass peaks
+  first_pass_prominence: 0.02    # fraction of max signal (calibration geometry pass)
+  control_prominence: 0.05       # fraction of max signal (control peak, distance-based pass)
+
+# Concentration folders in data/calibration/
+concentrations: [1, 2, 3, 4, 5, 6]
+
+# Per-band concentration regressors (step 03)
+regressor:
+  n_splits: 5
+  epochs: 150
+  batch_size: 32
+  lr: 0.001
+  huber_delta: 1.0
+  seed: 42
+
+# Patient condition classifier (step 05)
+classifier:
+  n_splits: 5
+  epochs: 200
+  lr: 0.001
+  weight_decay: 0.0001
+  dropout: 0.2
+  seed: 42
+  # Labels that differ only by case (Negative / negative) are always merged automatically.
+  # Use this to merge *different* words, e.g. {positive: HIV1}. Empty = no extra merging.
+  condition_aliases: {}

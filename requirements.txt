@@ -1,0 +1,12 @@
+numpy
+scipy
+opencv-python
+matplotlib
+seaborn
+pandas
+scikit-learn
+torch
+ultralytics
+pyyaml
+# optional: UMAP embedding plot in step 05 (--umap)
+# umap-learn
